@@ -1,5 +1,9 @@
 {
-  "dependencies": {},
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "morgan": "^1.9.1"
+  },
   "description": "Skill Server for Yangdori-Bot",
   "devDependencies": {
     "jest": "^23.6.0",
@@ -11,7 +15,8 @@
   "scripts": {
     "test": "jest --config jest.json",
     "test-coverage": "jest --coverage --config jest.json",
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev-start": "nodemon server.js"
   },
   "engines": {
     "node": "8.x"

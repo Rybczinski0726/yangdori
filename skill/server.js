@@ -1,12 +1,26 @@
 /*eslint no-console: 0*/
 "use strict";
 
-var http = require("http");
-var port = process.env.PORT || 3000;
+const express = require('express');
+const logger = require('morgan');
+const bodyParser = require('body-parser');
+// const cors = require('cors');
 
-http.createServer(function (req, res) {
-  res.writeHead(200, {"Content-Type": "text/plain"});
-  res.end("Hello World\n");
-}).listen(port);
+const api = require('./api/api')
 
-console.log("Server listening on port %d", port);
+const port = process.env.PORT || 3000;
+const app = express();
+
+app.use(logger('dev', {}));
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+// app.use(bodyParser.json());
+// app.use(cors());
+app.use('/api', api);
+
+// app.use(express.static('static'))
+
+const server = app.listen(port, () => {
+  console.log(`Yangdori-Bot Skill Server Listening on Port ${port}`);
+});
