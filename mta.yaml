@@ -31,6 +31,9 @@ modules:
   - name: skill
     type: nodejs
     path: skill
+    parameters:
+      memory: 128M
+      disk-quota: 256M
     provides:
      - name: skill_api
        properties:

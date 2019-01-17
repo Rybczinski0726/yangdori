@@ -1,18 +1,46 @@
 'use strict';
 
 const express = require('express');
+const schedule = require('node-schedule-tz');
 
 const apiRouter = express.Router();
 
-apiRouter.post('/sayHello', function (req, res) {
+let cups = 0;
+let lipbalms = 0;
+
+const simpleText = (text) => {
+	return {
+		text: text
+	}	
+};
+
+apiRouter.post('/dailyPromise', (req, res) => {
+    let text = '';
+    switch (req.body.intent.name) {
+        case '물 마시기':
+            cups++;
+            text = `${cups}잔 마셨다요!`;
+            break;
+
+        case '물':
+            text = `${cups}잔 마셨다요!`;
+            break;
+
+        case '립밤 바르기':
+            lipbalms++;
+            text = `${lipbalms}번 발랐다요!`;
+            break;
+
+        case '립밤':
+            text = `${lipbalms}번 발랐다요!`;
+            break;
+    }
     const responseBody = {
         version: "2.0",
         template: {
             outputs: [
                 {
-                    simpleText: {
-                        text: "hello I'm Ryan"
-                    }
+                    simpleText: simpleText(`지금까지 ${text}`)
                 }
             ]
         }
@@ -21,24 +49,24 @@ apiRouter.post('/sayHello', function (req, res) {
     res.status(200).send(responseBody);
 });
 
-apiRouter.post('/showHello', function (req, res) {
-    console.log(req.body);
+const scheduleForInitialization = () => {
+	const hours = 1;
+	const minutes = 0;
+	var date = new Date();
+	date.setUTCHours(hours - 9); //-9 defines the UTC time offset for a particular timezone
+	date.setUTCMinutes(minutes);
 
-    const responseBody = {
-        version: "2.0",
-        template: {
-            outputs: [
-                {
-                    simpleImage: {
-                        imageUrl: "https://t1.daumcdn.net/friends/prod/category/M001_friends_ryan2.jpg",
-                        altText: "hello I'm Ryan"
-                    }
-                }
-            ]
-        }
-    };
+	const rule = new schedule.RecurrenceRule();
+	rule.hour = date.getHours();
+	rule.minute = date.getMinutes();
 
-    res.status(200).send(responseBody);
-});
+	const scheduledJob = schedule.scheduleJob(rule, () => {
+		cups = 0;
+		lipbalms = 0;
+	});
+}
 
-module.exports = apiRouter;
+module.exports = {
+	apiRouter,
+	scheduleForInitialization
+}
